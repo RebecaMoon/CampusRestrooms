@@ -1,0 +1,132 @@
+# ==========================================
+# CampusRestrooms - Git Ignore
+# ==========================================
+
+# ------------------------------------------
+# Environment variables and secrets
+# ------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.aws/
+
+# ------------------------------------------
+# Frontend - React + Vite
+# ------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm/
+.eslintcache
+.vite/
+
+# ------------------------------------------
+# Backend - Python + Flask
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python packaging
+build/
+develop-eggs/
+dist-python/
+downloads/
+eggs/
+.eggs/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+
+# Flask instance and session data
+instance/
+flask_session/
+
+# Testing, coverage and type checking
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.pytype/
+.ruff_cache/
+
+# ------------------------------------------
+# Docker
+# ------------------------------------------
+.docker/
+docker-compose.override.yml
+docker-compose.*.override.yml
+
+# ------------------------------------------
+# AWS local configuration and credentials
+# ------------------------------------------
+.aws-sam/
+cdk.out/
+
+# ------------------------------------------
+# Database dumps and local database files
+# ------------------------------------------
+*.dump
+*.backup
+*.bak
+*.sqlite
+*.sqlite3
+*.db
+
+# Compressed database exports
+*.sql.gz
+*.dump.gz
+
+# ------------------------------------------
+# Logs and temporary files
+# ------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# ------------------------------------------
+# Operating system files
+# ------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# ------------------------------------------
+# IDEs and editors
+# ------------------------------------------
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ------------------------------------------
+# Local certificates and generated artifacts
+# ------------------------------------------
+certs/
+coverage/
