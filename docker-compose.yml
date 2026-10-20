@@ -1,0 +1,29 @@
+
+services:
+  db:
+    image: postgres:17
+    container_name: campusrestrooms-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: campusrestrooms
+      POSTGRES_USER: campus_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "127.0.0.1:5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U campus_admin -d campusrestrooms
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
