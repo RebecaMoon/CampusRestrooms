@@ -1,11 +1,14 @@
 import os
 from pathlib import Path
 
+from database import get_db_connection
 import psycopg
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_cors import CORS
 
+# Routes and blueprints
+from routes.restrooms_routes import restrooms_bp
 
 # Locate the project root and load environment variables.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -62,7 +65,7 @@ def create_app():
 
         try:
             # Open a connection and execute a simple test query.
-            with psycopg.connect(**app.config["DATABASE"]) as connection:
+            with get_db_connection() as connection:
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT 1")
                     cursor.fetchone()
@@ -107,6 +110,9 @@ def create_app():
 
 # Create the application instance used by Flask.
 app = create_app()
+
+# Blueprints
+app.register_blueprint(restrooms_bp)
 
 
 if __name__ == "__main__":
