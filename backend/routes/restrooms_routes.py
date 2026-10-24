@@ -1,5 +1,7 @@
 import psycopg
 from flask import Blueprint, current_app, jsonify, request
+from flask import g
+from auth_utils import roles_required
 
 from repositories.restrooms_repository import (
     get_all_restrooms,
@@ -43,6 +45,7 @@ def list_restrooms():
 
 
 @restrooms_bp.patch("/api/restrooms/<int:restroom_id>/status")
+@roles_required("admin", "custodian")
 def change_restroom_status(restroom_id):
     """Update a restroom status and record the change."""
 
@@ -67,6 +70,7 @@ def change_restroom_status(restroom_id):
         result = update_restroom_status(
             restroom_id=restroom_id,
             new_status=new_status,
+            changed_by=g.current_user["id"],
         )
 
         if result is None:
@@ -97,6 +101,7 @@ def change_restroom_status(restroom_id):
 
 
 @restrooms_bp.post("/api/restrooms")
+@roles_required("admin", "custodian")
 def add_restroom():
     """Create a new restroom."""
 

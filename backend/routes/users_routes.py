@@ -1,6 +1,7 @@
 import psycopg
 from psycopg.errors import UniqueViolation
 from flask import Blueprint, current_app, jsonify, request
+from auth_utils import roles_required
 
 from repositories.users_repository import (
     get_all_users,
@@ -13,6 +14,7 @@ users_bp = Blueprint("users", __name__)
 
 
 @users_bp.get("/api/users")
+@roles_required("admin")
 def list_users():
     """Return all user accounts."""
 
@@ -37,6 +39,7 @@ def list_users():
 
 
 @users_bp.post("/api/users")
+@roles_required("admin")
 def add_custodian():
     """Create a new custodian account."""
 
@@ -109,6 +112,7 @@ def add_custodian():
 
 
 @users_bp.patch("/api/users/<int:user_id>/status")
+@roles_required("admin")
 def change_user_status(user_id):
     """Activate or deactivate a custodian account."""
 
