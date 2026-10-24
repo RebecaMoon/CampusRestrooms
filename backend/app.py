@@ -8,7 +8,9 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 # Routes and blueprints
+from routes.auth_routes import auth_bp
 from routes.restrooms_routes import restrooms_bp
+from routes.users_routes import users_bp
 
 # Locate the project root and load environment variables.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -20,6 +22,13 @@ def create_app():
 
     app = Flask(__name__)
 
+    app.config.update(
+    SECRET_KEY=os.getenv("FLASK_SECRET_KEY"),
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=False,
+    )
+
     # Configure CORS to allow requests from the local React frontend.
     CORS(
         app,
@@ -27,7 +36,8 @@ def create_app():
             r"/api/*": {
                 "origins": ["http://localhost:5173"]
             }
-        }
+        },
+        supports_credentials=True,
     )
 
     # Load database configuration from environment variables.
@@ -113,6 +123,9 @@ app = create_app()
 
 # Blueprints
 app.register_blueprint(restrooms_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(users_bp)
+
 
 
 if __name__ == "__main__":
