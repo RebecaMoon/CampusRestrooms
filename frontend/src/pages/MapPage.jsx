@@ -14,10 +14,12 @@ import campusMap from "../assets/campus-map.png";
 import {
   getRestrooms,
   getBuildings,
+  updateRestroomStatus,
 } from "../services/restrooms";
 
 const MAP_WIDTH = 895;
 const MAP_HEIGHT = 1756;
+
 
 const IMAGE_BOUNDS = [
   [0, 0],
@@ -83,17 +85,39 @@ function FitCampusMap() {
 
   useEffect(() => {
     map.fitBounds(IMAGE_BOUNDS);
+    map.setZoom(map.getZoom() + 0.75);
   }, [map]);
 
   return null;
 }
 
-function RestroomDetails({ restroom }) {
+
+function RestroomDetails({
+  restroom,
+  isCustodian = false,
+  onStatusChange,
+  updating = false,
+}) {
   const status =
     STATUS_CONFIG[restroom.status] ?? {
       label: "Estado desconocido",
       color: "#64748b",
     };
+
+  const statusOptions = [
+    {
+      value: "available",
+      label: "Disponible",
+    },
+    {
+      value: "maintenance",
+      label: "En mantenimiento",
+    },
+    {
+      value: "out_of_service",
+      label: "Fuera de servicio",
+    },
+  ];
 
   return (
     <div className="restroom-popup">
@@ -112,9 +136,7 @@ function RestroomDetails({ restroom }) {
 
       <span
         className="status-badge"
-        style={{
-          "--status-color": status.color,
-        }}
+        style={{ "--status-color": status.color }}
       >
         {status.label}
       </span>
@@ -124,16 +146,101 @@ function RestroomDetails({ restroom }) {
           {restroom.description}
         </p>
       )}
+
+      {isCustodian && (
+        <div className="restroom-status-controls">
+          <p className="status-controls-title">
+            Cambiar estado
+          </p>
+
+          {statusOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`status-action ${
+                restroom.status === option.value
+                  ? "selected"
+                  : ""
+              }`}
+              disabled={
+                updating || restroom.status === option.value
+              }
+              onClick={() =>
+                onStatusChange(restroom.id, option.value)
+              }
+            >
+              <span>{option.label}</span>
+
+              {restroom.status === option.value && (
+                <span aria-label="Estado actual">✓</span>
+              )}
+            </button>
+          ))}
+
+          {updating && (
+            <p className="status-saving" role="status">
+              Guardando cambio...
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-export default function MapPage() {
+
+
+export default function MapPage({ isCustodian = false }) {
   const [buildings, setBuildings] = useState([]);
   const [buildingError, setBuildingError] = useState("");
   const [restrooms, setRestrooms] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [updatingRestroomId, setUpdatingRestroomId] = useState(null);
+  const [statusUpdateError, setStatusUpdateError] = useState("");
+
+
+  const [genderFilter, setGenderFilter] = useState(null);
+
+  const visibleRestrooms = genderFilter
+  ? restrooms.filter(
+      (restroom) =>
+        restroom.name?.toLowerCase() ===
+          genderFilter.toLowerCase() &&
+        restroom.status === "available"
+    )
+  : restrooms;
+
+  function toggleGenderFilter(gender) {
+    setGenderFilter((current) =>
+      current === gender ? null : gender
+    );
+  }
+
+
+  async function handleStatusChange(restroomId, newStatus) {
+    setUpdatingRestroomId(restroomId);
+    setStatusUpdateError("");
+
+    try {
+      await updateRestroomStatus(restroomId, newStatus);
+
+      setRestrooms((current) =>
+        current.map((restroom) =>
+          restroom.id === restroomId
+            ? { ...restroom, status: newStatus }
+            : restroom
+        )
+      );
+    } catch (err) {
+      setStatusUpdateError(
+        err.message || "No se pudo actualizar el baño."
+      );
+    } finally {
+      setUpdatingRestroomId(null);
+    }
+  }
+
 
   useEffect(() => {
     let cancelled = false;
@@ -158,6 +265,7 @@ export default function MapPage() {
         }
       }
     }
+    
 
     async function loadBuildings() {
       try {
@@ -185,14 +293,112 @@ export default function MapPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    let timeoutId;
+
+    async function refreshRestrooms() {
+      try {
+        const data = await getRestrooms();
+
+        if (!cancelled) {
+          setRestrooms((current) => {
+            const hasChanges =
+              current.length !== data.length ||
+              data.some((next) => {
+                const previous = current.find(
+                  (restroom) => restroom.id === next.id
+                );
+
+                return (
+                  !previous ||
+                  previous.status !== next.status ||
+                  previous.activo !== next.activo ||
+                  previous.map_x !== next.map_x ||
+                  previous.map_y !== next.map_y
+                );
+              });
+
+            return hasChanges ? data : current;
+          });
+        }
+      } catch {
+        // Si falla una consulta, se conserva el último estado.
+      }
+
+      if (!cancelled) {
+        timeoutId = setTimeout(refreshRestrooms, 5000);
+      }
+    }
+
+    timeoutId = setTimeout(refreshRestrooms, 5000);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+
+
+  
+
   return (
     <main className="map-page">
-      <header className="map-header">
-        <h1>CampusRestrooms</h1>
-        <p>
-          Consulta la disponibilidad de los baños del campus.
-        </p>
-      </header>
+      
+    
+    <header className="map-header">
+      <div className="map-header-content">
+        <div className="brand">
+          <div className="brand-mark" aria-hidden="true">
+            wc
+          </div>
+
+          <div className="brand-text">
+            <h1>CUCEI</h1>
+            <span>Servicios sanitarios</span>
+          </div>
+        </div>
+
+        <div className="header-actions">
+          <p className="header-description">
+            Encuentra un baño disponible.
+          </p>
+
+          <div className="gender-filters" aria-label="Filtrar baños">
+            <button
+              type="button"
+              className={`gender-button ${
+                genderFilter === "Hombres" ? "active men" : ""
+              }`}
+              aria-pressed={genderFilter === "Hombres"}
+              onClick={() => toggleGenderFilter("Hombres")}
+            >
+              <span className="gender-symbol" aria-hidden="true">
+                ♂
+              </span>
+              Hombres
+            </button>
+
+            <button
+              type="button"
+              className={`gender-button ${
+                genderFilter === "Mujeres" ? "active women" : ""
+              }`}
+              aria-pressed={genderFilter === "Mujeres"}
+              onClick={() => toggleGenderFilter("Mujeres")}
+            >
+              <span className="gender-symbol" aria-hidden="true">
+                ♀
+              </span>
+              Mujeres
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
 
       {loading && (
         <p className="map-message">
@@ -208,6 +414,11 @@ export default function MapPage() {
       {buildingError && (
         <p className="map-error" role="alert">
           {buildingError}
+        </p>
+      )}
+      {statusUpdateError && isCustodian && (
+        <p className="map-error" role="alert">
+          {statusUpdateError}
         </p>
       )}
 
@@ -243,7 +454,7 @@ export default function MapPage() {
           ))}
 
 
-          {restrooms.map((restroom) => (
+          {visibleRestrooms.map((restroom) => (
             <Marker
               key={restroom.id}
               position={[
@@ -253,7 +464,12 @@ export default function MapPage() {
               icon={createRestroomIcon(restroom.status)}
             >
               <Popup>
-                <RestroomDetails restroom={restroom} />
+                <RestroomDetails
+                  restroom={restroom}
+                  isCustodian={isCustodian}
+                  onStatusChange={handleStatusChange}
+                  updating={updatingRestroomId === restroom.id}
+                />
               </Popup>
             </Marker>
           ))}
@@ -262,10 +478,12 @@ export default function MapPage() {
 
       <section className="map-footer">
         <p className="restroom-count">
-          {loading
-            ? "Cargando disponibilidad..."
+        {loading
+          ? "Cargando disponibilidad..."
+          : genderFilter
+            ? `${visibleRestrooms.length} baños disponibles para ${genderFilter.toLowerCase()}`
             : `${restrooms.length} baños registrados`}
-        </p>
+      </p>
 
         <div className="map-legend">
           {Object.entries(STATUS_CONFIG).map(
