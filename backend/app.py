@@ -8,6 +8,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 # Routes and blueprints
+from routes.buildings_routes import buildings_bp
 from routes.auth_routes import auth_bp
 from routes.restrooms_routes import restrooms_bp
 from routes.users_routes import users_bp
@@ -34,7 +35,7 @@ def create_app():
         app,
         resources={
             r"/api/*": {
-                "origins": ["http://localhost:5173"]
+                "origins": "*"
             }
         },
         supports_credentials=True,
@@ -125,6 +126,7 @@ app = create_app()
 app.register_blueprint(restrooms_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(users_bp)
+app.register_blueprint(buildings_bp)
 
 
 
@@ -134,7 +136,7 @@ if __name__ == "__main__":
 
     # Keep the development server accessible only from this computer.
     app.run(
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=5000,
         debug=debug_mode,
     )
