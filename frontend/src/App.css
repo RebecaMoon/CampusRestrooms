@@ -936,3 +936,198 @@ body {
     padding: 22px 18px;
   }
 }
+
+
+/* Lista de cuentas de intendentes */
+
+.admin-list-card {
+  margin-top: 24px;
+}
+
+.admin-list-card .admin-card-heading {
+  flex-wrap: wrap;
+}
+
+.admin-refresh {
+  margin-left: auto;
+  padding: 9px 12px;
+  color: #245447;
+  background: #F3F7F1;
+  border: 1px solid #D5E1D5;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-refresh:hover:not(:disabled) {
+  background: #EAF1E8;
+}
+
+.admin-refresh:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.admin-list-empty {
+  margin: 0;
+  padding: 28px 16px;
+  color: #748078;
+  background: #F7FAF6;
+  border: 1px dashed #D5E1D5;
+  border-radius: 10px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.admin-custodian-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-custodian {
+  min-width: 0;
+  padding: 20px;
+  background: #FBFCFA;
+  border: 1px solid #DCE6DB;
+  border-radius: 12px;
+}
+
+.admin-custodian-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-custodian-top > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-custodian-id {
+  color: #748078;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+.admin-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.admin-status.active {
+  color: #245447;
+  background: #E4F2E5;
+}
+
+.admin-status.inactive {
+  color: #8A5B30;
+  background: #F8EDDF;
+}
+
+.admin-custodian-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.admin-custodian-fields .login-field {
+  min-width: 0;
+}
+
+.admin-custodian-fields input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-custodian-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #E5EBE3;
+}
+
+.admin-custodian-actions button {
+  min-height: 40px;
+  padding: 10px 13px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, opacity 150ms ease;
+}
+
+.admin-custodian-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.admin-custodian-actions .admin-save {
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  flex: 1 1 150px;
+}
+
+.admin-secondary {
+  color: #245447;
+  background: #EAF1E8;
+  border: 1px solid #D5E1D5;
+}
+
+.admin-secondary:hover:not(:disabled) {
+  background: #DCEADB;
+}
+
+.admin-delete {
+  color: #A12B25;
+  background: #FFF7F6;
+  border: 1px solid #F0D5D2;
+}
+
+.admin-delete:hover:not(:disabled) {
+  background: #FCE9E7;
+}
+
+@media (max-width: 520px) {
+  .admin-list-card {
+    padding: 22px 16px;
+  }
+
+  .admin-list-card .admin-card-heading {
+    align-items: flex-start;
+  }
+
+  .admin-refresh {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .admin-custodian {
+    padding: 16px 13px;
+  }
+
+  .admin-custodian-actions {
+    flex-direction: column;
+  }
+
+  .admin-custodian-actions button,
+  .admin-custodian-actions .admin-save {
+    width: 100%;
+    flex: auto;
+  }
+}
