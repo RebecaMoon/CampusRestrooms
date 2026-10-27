@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MapPage from "./pages/MapPage";
 import LoginPage from "./pages/LoginPage";
 import CustodianPage from "./pages/CustodianPage";
+import AdminPage from "./pages/AdminPage";
 import "./App.css";
 
 function CustodianPlaceholder() {
@@ -43,6 +44,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/custodian" element={<CustodianPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 }

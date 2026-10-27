@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+ 
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -19,33 +20,34 @@ export default function LoginPage() {
     try {
       const user = await login(username.trim(), password);
 
-      // Por ahora, este acceso es para intendentes.
-      if (user.role !== "custodian") {
+      if (user.role === "admin") {
+        navigate("/admin", {
+          replace: true,
+          state: { user },
+        });
+      } else if (user.role === "custodian") {
+        navigate("/custodian", {
+          replace: true,
+          state: { user },
+        });
+      } else {
         try {
           await logout();
         } catch {
-          // No ocultar el mensaje de acceso denegado.
+          // Se conserva el mensaje de acceso denegado.
         }
 
-        setError(
-          "Esta cuenta no tiene acceso al panel de intendentes."
-        );
-        return;
+        setError("Esta cuenta no tiene un rol autorizado.");
       }
-
-      navigate("/custodian", {
-        replace: true,
-        state: { user },
-      });
     } catch (err) {
       setError(
-        err.message ||
-          "No fue posible conectar con el servidor."
+        err.message || "No fue posible conectar con el servidor."
       );
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <main className="login-page">
