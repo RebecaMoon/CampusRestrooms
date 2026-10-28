@@ -263,19 +263,23 @@ export default function AdminPage() {
               <span>Servicios sanitarios del campus</span>
             </div>
           </Link>
+            <div className="admin-header-actions">
+              <span className="admin-role">Administración</span>
 
-          <div className="admin-header-actions">
-            <span className="admin-role">Administración</span>
+              <Link to="/admin/map" className="admin-map-button">
+                Ver mapa
+              </Link>
 
-            <button
-              type="button"
-              className="admin-logout"
-              onClick={handleLogout}
-              disabled={loggingOut}
-            >
-              {loggingOut ? "Cerrando..." : "Cerrar sesión"}
-            </button>
-          </div>
+              <button
+                type="button"
+                className="admin-logout"
+                onClick={handleLogout}
+                disabled={loggingOut}
+              >
+                {loggingOut ? "Cerrando..." : "Cerrar sesión"}
+              </button>
+            </div>
+
         </div>
       </header>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import {
   ImageOverlay,
   MapContainer,
@@ -100,7 +101,7 @@ function FitCampusMap() {
 
 function RestroomDetails({
   restroom,
-  isCustodian = false,
+  canManageRestrooms = false,
   onStatusChange,
   updating = false,
 }) {
@@ -179,7 +180,7 @@ function RestroomDetails({
         </p>
       )}
 
-      {isCustodian && (
+      {canManageRestrooms && (
         <div className="restroom-status-controls">
           <p className="status-controls-title">
             Cambiar estado
@@ -223,7 +224,7 @@ function RestroomDetails({
         </div>
       )}
 
-      {isCustodian &&
+      {canManageRestrooms &&
         historyOpen &&
         createPortal(
           <div
@@ -342,9 +343,11 @@ function RestroomDetails({
                         <p className="history-author">
                           {item.changed_by == null
                             ? "Responsable no registrado"
-                            : custodian
-                              ? custodian.full_name
-                              : `Intendente ID: ${item.changed_by}`}
+                            : Number(item.changed_by) === 1
+                              ? "Administrador"
+                              : custodian
+                                ? custodian.full_name
+                                : `Intendente ID: ${item.changed_by}`}
                         </p>
 
                         {item.notes && (
@@ -377,7 +380,11 @@ function RestroomDetails({
 
 
 
-export default function MapPage({ isCustodian = false }) {
+export default function MapPage({
+  isCustodian = false,
+  isAdmin = false,
+  }) {
+  const canManageRestrooms = isCustodian || isAdmin;
   const [buildings, setBuildings] = useState([]);
   const [buildingError, setBuildingError] = useState("");
   const [restrooms, setRestrooms] = useState([]);
@@ -531,9 +538,11 @@ export default function MapPage({ isCustodian = false }) {
   
 
   return (
-    <main
-      className={`map-page ${isCustodian ? "map-page--custodian" : ""}`}
-    >
+      <main
+    className={`map-page ${
+      isCustodian || isAdmin ? "map-page--custodian" : ""
+    }`}
+  >
       
     
     <header className="map-header">
@@ -553,6 +562,14 @@ export default function MapPage({ isCustodian = false }) {
           <p className="header-description">
             Encuentra un baño disponible.
           </p>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="admin-back-button"
+              >
+                ← Volver a administración
+              </Link>
+            )}
 
           <div className="gender-filters" aria-label="Filtrar baños">
             <button
@@ -605,7 +622,7 @@ export default function MapPage({ isCustodian = false }) {
           {buildingError}
         </p>
       )}
-      {statusUpdateError && isCustodian && (
+      {statusUpdateError && canManageRestrooms && (
         <p className="map-error" role="alert">
           {statusUpdateError}
         </p>
@@ -655,7 +672,7 @@ export default function MapPage({ isCustodian = false }) {
               <Popup>
                 <RestroomDetails
                   restroom={restroom}
-                  isCustodian={isCustodian}
+                  canManageRestrooms={canManageRestrooms}
                   onStatusChange={handleStatusChange}
                   updating={updatingRestroomId === restroom.id}
                 />

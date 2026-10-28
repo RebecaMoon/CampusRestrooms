@@ -45,6 +45,7 @@ export default function App() {
       <Route path="/custodian" element={<CustodianPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/admin/map" element={<MapPage isAdmin />}/>
     </Routes>
   );
 }
