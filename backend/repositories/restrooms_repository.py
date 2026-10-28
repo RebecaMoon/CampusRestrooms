@@ -206,3 +206,26 @@ def get_restroom_by_id(restroom_id):
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute(query, (restroom_id,))
             return cursor.fetchone()
+
+
+def get_restroom_status_history(restroom_id):
+    """Retrieve the status change history for one restroom."""
+
+    query = """
+        SELECT
+            id,
+            restroom_id,
+            changed_by,
+            previous_status,
+            new_status,
+            changed_at,
+            notes
+        FROM restroom_status_history
+        WHERE restroom_id = %s
+        ORDER BY changed_at DESC, id DESC;
+    """
+
+    with get_db_connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(query, (restroom_id,))
+            return cursor.fetchall()

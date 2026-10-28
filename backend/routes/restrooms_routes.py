@@ -8,6 +8,7 @@ from repositories.restrooms_repository import (
     update_restroom_status,
     get_restroom_by_id,
     create_restroom,
+    get_restroom_status_history,
 )
 
 
@@ -223,4 +224,38 @@ def get_restroom(restroom_id):
         return jsonify({
             "status": "error",
             "message": "Could not retrieve restroom.",
+        }), 503
+
+
+@restrooms_bp.get("/api/restrooms/<int:restroom_id>/history")
+@roles_required("admin", "custodian")
+def list_restroom_status_history(restroom_id):
+    """Return the status change history for one restroom."""
+
+    try:
+        # Verify that the restroom exists and is active.
+        restroom = get_restroom_by_id(restroom_id)
+
+        if restroom is None:
+            return jsonify({
+                "status": "error",
+                "message": "Restroom not found.",
+            }), 404
+
+        history = get_restroom_status_history(restroom_id)
+
+        return jsonify({
+            "status": "ok",
+            "count": len(history),
+            "data": history,
+        }), 200
+
+    except psycopg.Error:
+        current_app.logger.exception(
+            "Failed to retrieve restroom status history."
+        )
+
+        return jsonify({
+            "status": "error",
+            "message": "Could not retrieve restroom status history.",
         }), 503

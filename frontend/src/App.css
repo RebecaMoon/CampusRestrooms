@@ -1260,3 +1260,243 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
 }
+/* Selector entre creación y edición de cuentas */
+.admin-view-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  background: #F7FAFF;
+  border: 1px solid #C6DDF5;
+  border-radius: 12px;
+}
+
+.admin-view-switch p {
+  margin: 0;
+  color: #52677D;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.admin-view-button {
+  min-height: 42px;
+  padding: 10px 16px;
+  color: #FFFFFF;
+  background: #3679B9;
+  border: 1px solid #3679B9;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-view-button:hover {
+  background: #28649E;
+  border-color: #28649E;
+}
+
+.admin-view-button:focus-visible {
+  outline: 3px solid #9CC7F0;
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .admin-view-switch {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-view-button {
+    width: 100%;
+  }
+}
+
+
+/* Botón para consultar el historial */
+.history-open-button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #c6d9ee;
+  border-radius: 8px;
+  background: #eaf4ff;
+  color: #245b8f;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.history-open-button:hover {
+  background: #dceeff;
+}
+
+/* Fondo de la ventana modal */
+.history-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(15 23 42 / 55%);
+}
+
+/* Ventana del historial */
+.history-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 520px);
+  max-height: min(80vh, 680px);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #dbe4ee;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 25%);
+}
+
+.history-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.history-modal-header h2 {
+  margin: 0;
+  color: #163a32;
+  font-size: 19px;
+}
+
+.history-modal-header p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.history-close-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.history-modal-content {
+  min-height: 100px;
+  padding: 16px 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.history-entry {
+  padding: 14px 0;
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.history-entry:first-child {
+  padding-top: 0;
+}
+
+.history-entry:last-child {
+  border-bottom: 0;
+}
+
+.history-date {
+  display: block;
+  margin-bottom: 10px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.history-transition {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-status {
+  display: inline-block;
+  padding: 5px 9px;
+  border-left: 3px solid var(--history-status-color);
+  border-radius: 5px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-arrow {
+  color: #64748b;
+}
+
+.history-author,
+.history-notes {
+  margin: 9px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.history-notes {
+  color: #334155;
+}
+
+.history-error {
+  color: #b91c1c;
+}
+
+.history-empty {
+  color: #64748b;
+  text-align: center;
+}
+
+.history-modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #e5eaf0;
+  text-align: right;
+}
+
+.history-modal-footer button {
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #3679b9;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.history-modal-footer button:hover {
+  background: #28649e;
+}
+
+@media (max-width: 480px) {
+  .history-modal-overlay {
+    padding: 10px;
+  }
+
+  .history-modal {
+    max-height: 85vh;
+    border-radius: 12px;
+  }
+
+  .history-modal-header,
+  .history-modal-content {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}

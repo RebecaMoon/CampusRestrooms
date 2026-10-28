@@ -13,6 +13,8 @@ export default function AdminPage() {
   const [authorized, setAuthorized] = useState(false);
   const [checking, setChecking] = useState(true);
 
+  const [viewMode, setViewMode] = useState("create");
+
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -279,19 +281,42 @@ export default function AdminPage() {
 
       <section className="admin-content">
         <div className="admin-intro">
+
+
+        <div className="admin-view-switch">
+          <button
+            type="button"
+            className="admin-view-button"
+            onClick={() =>
+              setViewMode((current) =>
+                current === "create" ? "edit" : "create"
+              )
+            }
+          >
+            {viewMode === "create"
+              ? "Ver cuentas y editar"
+              : "Volver a crear cuenta"}
+          </button>
+
+          <p>
+            {viewMode === "create"
+              ? "Registra un nuevo intendente."
+              : "Edita las cuentas registradas."}
+          </p>
+        </div>
+
+
           <span className="admin-eyebrow">
             PANEL DE ADMINISTRACIÓN
           </span>
 
           <h2>Gestión de intendentes</h2>
 
-          <p>
-            Crea cuentas para el personal encargado de mantener
-            actualizada la disponibilidad de los baños del campus.
-          </p>
+      
         </div>
 
-        <section className="admin-card">
+        {viewMode === "create" && (
+          <section className="admin-card">
           <div className="admin-card-heading">
             <div className="admin-card-icon" aria-hidden="true">
               +
@@ -382,8 +407,11 @@ export default function AdminPage() {
               {loading ? "Creando cuenta..." : "Crear cuenta de intendente"}
             </button>
           </form>
-        </section>
+          </section>
+          )}
 
+
+        {viewMode === "edit" && (
         <section className="admin-card admin-list-card">
           <div className="admin-card-heading">
             <div className="admin-card-icon" aria-hidden="true">
@@ -570,6 +598,7 @@ export default function AdminPage() {
             </div>
           )}
         </section>
+        )}
       </section>
     </main>
   );

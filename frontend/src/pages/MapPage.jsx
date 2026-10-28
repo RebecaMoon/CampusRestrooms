@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ImageOverlay,
   MapContainer,
@@ -11,10 +12,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import campusMap from "../assets/campus-map.png";
 
+import { getCustodians } from "../services/users";
+
 import {
   getRestrooms,
   getBuildings,
   updateRestroomStatus,
+  getRestroomStatusHistory,
 } from "../services/restrooms";
 
 const MAP_WIDTH = 895;
@@ -92,32 +96,60 @@ function FitCampusMap() {
 }
 
 
+
+
 function RestroomDetails({
   restroom,
   isCustodian = false,
   onStatusChange,
   updating = false,
 }) {
-  const status =
-    STATUS_CONFIG[restroom.status] ?? {
-      label: "Estado desconocido",
-      color: "#64748b",
-    };
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState("");
+  const [custodians, setCustodians] = useState([]);
+
+  const status = STATUS_CONFIG[restroom.status] ?? {
+    label: "Estado desconocido",
+    color: "#64748b",
+  };
 
   const statusOptions = [
-    {
-      value: "available",
-      label: "Disponible",
-    },
-    {
-      value: "maintenance",
-      label: "En mantenimiento",
-    },
-    {
-      value: "out_of_service",
-      label: "Fuera de servicio",
-    },
+    { value: "available", label: "Disponible" },
+    { value: "maintenance", label: "En mantenimiento" },
+    { value: "out_of_service", label: "Fuera de servicio" },
   ];
+
+    
+  async function handleOpenHistory() {
+    setHistoryOpen(true);
+    setHistoryLoading(true);
+    setHistoryError("");
+    setHistory([]);
+    setCustodians([]);
+
+    try {
+      const [historyData, custodiansData] = await Promise.all([
+        getRestroomStatusHistory(restroom.id),
+        getCustodians(),
+      ]);
+
+      setHistory(historyData);
+      setCustodians(custodiansData);
+    } catch (err) {
+      setHistoryError(
+        err.message || "No se pudo cargar el historial."
+      );
+    } finally {
+      setHistoryLoading(false);
+    }
+  }
+
+
+  function closeHistory() {
+    setHistoryOpen(false);
+  }
 
   return (
     <div className="restroom-popup">
@@ -158,9 +190,7 @@ function RestroomDetails({
               key={option.value}
               type="button"
               className={`status-action ${
-                restroom.status === option.value
-                  ? "selected"
-                  : ""
+                restroom.status === option.value ? "selected" : ""
               }`}
               disabled={
                 updating || restroom.status === option.value
@@ -182,11 +212,168 @@ function RestroomDetails({
               Guardando cambio...
             </p>
           )}
+
+          <button
+            type="button"
+            className="history-open-button"
+            onClick={handleOpenHistory}
+          >
+            Ver historial de cambios
+          </button>
         </div>
       )}
+
+      {isCustodian &&
+        historyOpen &&
+        createPortal(
+          <div
+            className="history-modal-overlay"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                closeHistory();
+              }
+            }}
+          >
+            <section
+              className="history-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="history-modal-title"
+            >
+              <header className="history-modal-header">
+                <div>
+                  <h2 id="history-modal-title">
+                    Historial de cambios
+                  </h2>
+                  <p>{restroom.name}</p>
+                </div>
+
+                <button
+                  type="button"
+                  className="history-close-button"
+                  onClick={closeHistory}
+                  aria-label="Cerrar historial"
+                >
+                  ×
+                </button>
+              </header>
+
+              <div className="history-modal-content">
+                {historyLoading && (
+                  <p role="status">
+                    Cargando historial...
+                  </p>
+                )}
+
+                {historyError && (
+                  <p className="history-error" role="alert">
+                    {historyError}
+                  </p>
+                )}
+
+                {!historyLoading &&
+                  !historyError &&
+                  history.length === 0 && (
+                    <p className="history-empty">
+                      Este baño todavía no tiene cambios registrados.
+                    </p>
+                  )}
+
+                {!historyLoading &&
+                  !historyError &&
+                  history.map((item) => {
+                    const previousStatus =
+                      STATUS_CONFIG[item.previous_status];
+
+                    const newStatus =
+                      STATUS_CONFIG[item.new_status];
+
+                      
+                      const custodian = custodians.find(
+                        (user) => Number(user.id) === Number(item.changed_by)
+                      );
+
+                    return (
+                      <article
+                        className="history-entry"
+                        key={item.id}
+                      >
+                        <time className="history-date">
+                          {item.changed_at
+                            ? new Date(
+                                item.changed_at
+                              ).toLocaleString("es-MX", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              })
+                            : "Fecha no disponible"}
+                        </time>
+
+                        <div className="history-transition">
+                          <span
+                            className="history-status"
+                            style={{
+                              "--history-status-color":
+                                previousStatus?.color ?? "#64748b",
+                            }}
+                          >
+                            {previousStatus?.label ??
+                              item.previous_status}
+                          </span>
+
+                          <span
+                            className="history-arrow"
+                            aria-label="cambió a"
+                          >
+                            →
+                          </span>
+
+                          <span
+                            className="history-status"
+                            style={{
+                              "--history-status-color":
+                                newStatus?.color ?? "#64748b",
+                            }}
+                          >
+                            {newStatus?.label ?? item.new_status}
+                          </span>
+                        </div>
+
+                        <p className="history-author">
+                          {item.changed_by == null
+                            ? "Responsable no registrado"
+                            : custodian
+                              ? custodian.full_name
+                              : `Intendente ID: ${item.changed_by}`}
+                        </p>
+
+                        {item.notes && (
+                          <p className="history-notes">
+                            {item.notes}
+                          </p>
+                        )}
+                      </article>
+                    );
+                  })}
+              </div>
+
+              <footer className="history-modal-footer">
+                <button
+                  type="button"
+                  onClick={closeHistory}
+                >
+                  Cerrar
+                </button>
+              </footer>
+            </section>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
+
+
 
 
 

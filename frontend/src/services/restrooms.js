@@ -47,3 +47,24 @@ export async function updateRestroomStatus(restroomId, status) {
 
   return result.data;
 }
+
+
+export async function getRestroomStatusHistory(restroomId) {
+  const response = await fetch(
+    `${API_URL}/restrooms/${restroomId}/history`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || "No se pudo cargar el historial de cambios."
+    );
+  }
+
+  return result.data;
+}

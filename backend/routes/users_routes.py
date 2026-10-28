@@ -16,7 +16,7 @@ users_bp = Blueprint("users", __name__)
 
 
 @users_bp.get("/api/users")
-@roles_required("admin")
+@roles_required("admin", "custodian")
 def list_users():
     """Return all user accounts."""
 
