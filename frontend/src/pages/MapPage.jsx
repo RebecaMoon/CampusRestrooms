@@ -56,9 +56,9 @@ function createRestroomIcon(status) {
         <span></span>
       </div>
     `,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    popupAnchor: [0, -16],
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -21],
   });
 }
 
@@ -344,7 +344,9 @@ export default function MapPage({ isCustodian = false }) {
   
 
   return (
-    <main className="map-page">
+    <main
+      className={`map-page ${isCustodian ? "map-page--custodian" : ""}`}
+    >
       
     
     <header className="map-header">

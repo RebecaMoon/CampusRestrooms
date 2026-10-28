@@ -205,8 +205,8 @@ body {
 }
 
 .restroom-marker {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   display: grid;
   place-items: center;
 
@@ -219,11 +219,12 @@ body {
 }
 
 .restroom-marker span {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   background: #ffffff;
   border-radius: 50%;
 }
+
 
 .restroom-marker:hover {
   transform: scale(1.18);
@@ -1130,4 +1131,132 @@ body {
     width: 100%;
     flex: auto;
   }
+}
+
+
+/* Tema azul exclusivo para la vista de intendentes */
+.map-page--custodian {
+  background: #EAF4FF;
+}
+
+.map-page--custodian .map-header {
+  background: #DCEEFF;
+  border-bottom: 1px solid #C6DDF5;
+}
+
+/* Mantener el texto legible y combinarlo con el logo verde */
+.map-page--custodian .header-description {
+  color: #465B70;
+}
+
+/* Fondo azul claro también en la zona de la leyenda */
+.map-page--custodian .map-footer {
+  background: transparent;
+}
+
+
+/* Paleta azul exclusiva para el panel de administración */
+.admin-page {
+  background: #EAF4FF;
+}
+
+.admin-page .map-header {
+  background: #DCEEFF;
+  border-bottom: 1px solid #C6DDF5;
+}
+
+/* Textos del encabezado */
+.admin-page .admin-role {
+  color: #365F85;
+}
+
+.admin-page .admin-logout {
+  color: #163A32;
+  background: #FFFFFF;
+  border-color: #C6DDF5;
+}
+
+.admin-page .admin-logout:hover:not(:disabled) {
+  background: #F0F7FF;
+}
+
+/* Títulos y detalles del panel */
+.admin-page .admin-eyebrow {
+  color: #365F85;
+}
+
+.admin-page .admin-intro p {
+  color: #52677D;
+}
+
+/* Tarjetas blancas sobre el fondo azul */
+.admin-page .admin-card {
+  background: #FFFFFF;
+  border-color: #C6DDF5;
+}
+
+/* Iconos: conservar el verde del logo */
+.admin-page .admin-card-icon {
+  background: #163A32;
+}
+
+/* Tarjetas individuales de las cuentas */
+.admin-page .admin-custodian {
+  background: #F7FAFF;
+  border-color: #D5E5F7;
+}
+
+/* Campos de texto con bordes azulados */
+.admin-page .login-field input {
+  border-color: #C6DDF5;
+}
+
+.admin-page .login-field input:focus {
+  border-color: #6B9BCB;
+  box-shadow: 0 0 0 3px rgb(107 155 203 / 15%);
+}
+
+/* Botones principales: mantener el verde */
+.admin-page .admin-submit {
+  background: #163A32;
+}
+
+.admin-page .admin-submit:hover:not(:disabled) {
+  background: #245447;
+}
+
+/* Botón secundario */
+.admin-page .admin-secondary {
+  color: #365F85;
+  background: #EAF4FF;
+  border-color: #C6DDF5;
+}
+
+.admin-page .admin-secondary:hover:not(:disabled) {
+  background: #DCEEFF;
+}
+
+/* Mensajes vacíos */
+.admin-page .admin-list-empty {
+  background: #F5F9FF;
+  border-color: #C6DDF5;
+}
+/* Botones azules del panel de administración */
+.admin-page .admin-submit {
+  background: #3679B9;
+  color: #FFFFFF;
+  border: 1px solid #3679B9;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Efecto al pasar el cursor */
+.admin-page .admin-submit:hover:not(:disabled) {
+  background: #28649E;
+  border-color: #28649E;
+}
+
+/* Estado deshabilitado */
+.admin-page .admin-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
