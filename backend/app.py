@@ -31,11 +31,16 @@ def create_app():
     )
 
     # Configure CORS to allow requests from the local React frontend.
+   # Configure CORS for local frontend development.
+# In production, Nginx serves the frontend and proxies /api.
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": "*"
+                "origins": os.getenv(
+                    "CORS_ORIGINS",
+                    "http://localhost:5173"
+                ).split(",")
             }
         },
         supports_credentials=True,
