@@ -1578,3 +1578,37 @@ body {
   transform: translateY(0);
   box-shadow: none;
 }
+
+/* Acceso discreto al inicio de sesión */
+.login-map-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+
+  color: #245447;
+  background: #F3F7F1;
+  border: 1px solid #D5E1D5;
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.login-map-button:hover {
+  color: #163A32;
+  background: #EAF1E8;
+  border-color: #B9CEB9;
+}
+
+.login-map-button:focus-visible {
+  outline: 3px solid rgb(82 125 104 / 30%);
+  outline-offset: 3px;
+}

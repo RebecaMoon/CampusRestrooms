@@ -562,6 +562,11 @@ export default function MapPage({
           <p className="header-description">
             Encuentra un baño disponible.
           </p>
+          {!isCustodian && !isAdmin && (
+          <Link to="/login" className="login-map-button">
+            Iniciar sesión
+          </Link>
+        )}
             {isAdmin && (
               <Link
                 to="/admin"
