@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { logout } from "../services/auth";
 import { Link } from "react-router-dom";
 import {
   ImageOverlay,
@@ -405,6 +406,21 @@ export default function MapPage({
     )
   : restrooms;
 
+
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleCustodianLogout() {
+    setLoggingOut(true);
+
+    try {
+      await logout();
+      window.location.replace("/");
+    } catch {
+      setError("No fue posible cerrar la sesión. Inténtalo de nuevo.");
+      setLoggingOut(false);
+    }
+  }
+
   function toggleGenderFilter(gender) {
     setGenderFilter((current) =>
       current === gender ? null : gender
@@ -562,11 +578,26 @@ export default function MapPage({
           <p className="header-description">
             Encuentra un baño disponible.
           </p>
+
+
           {!isCustodian && !isAdmin && (
-          <Link to="/login" className="login-map-button">
-            Iniciar sesión
-          </Link>
-        )}
+            <Link to="/login" className="login-map-button">
+              Iniciar sesión
+            </Link>
+          )}
+
+          {isCustodian && (
+            <button
+              type="button"
+              className="login-map-button custodian-logout-button"
+              onClick={handleCustodianLogout}
+              disabled={loggingOut}
+            >
+              {loggingOut ? "Cerrando sesión..." : "Cerrar sesión"}
+            </button>
+          )}
+
+
             {isAdmin && (
               <Link
                 to="/admin"

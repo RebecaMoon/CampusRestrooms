@@ -1596,6 +1596,9 @@ body {
   text-decoration: none;
   white-space: nowrap;
 
+  font-family: inherit;
+  cursor: pointer;
+
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -1610,5 +1613,29 @@ body {
 
 .login-map-button:focus-visible {
   outline: 3px solid rgb(82 125 104 / 30%);
+  outline-offset: 3px;
+}
+
+.login-map-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+
+/* Cerrar sesión: solo vista del intendente */
+.custodian-logout-button {
+  color: #245477;
+  background: #F0F7FF;
+  border-color: #C6DDF5;
+}
+
+.custodian-logout-button:hover:not(:disabled) {
+  color: #17466D;
+  background: #DCEEFF;
+  border-color: #A9CBEF;
+}
+
+.custodian-logout-button:focus-visible {
+  outline: 3px solid rgb(54 121 185 / 30%);
   outline-offset: 3px;
 }
