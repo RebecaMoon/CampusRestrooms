@@ -264,7 +264,7 @@ export default function AdminPage() {
             </div>
           </Link>
             <div className="admin-header-actions">
-              <span className="admin-role">Administración</span>
+              
 
               <Link to="/admin/map" className="admin-map-button">
                 Ver mapa
